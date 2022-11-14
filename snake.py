@@ -3,6 +3,7 @@ import random
 from enum import Enum
 from collections import namedtuple
 pygame.init()
+#Direction
 class Direction(Enum):
     RIGHT=1
     LEFT=2
