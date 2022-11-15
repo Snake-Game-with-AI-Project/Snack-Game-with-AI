@@ -77,7 +77,7 @@ game=Snake()
 
 while True:
     game.play_step()
-    if game.game_over:#
+    if game.game_over:##
         break
 
 print(game.score )
