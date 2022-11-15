@@ -1,89 +1,84 @@
-import cvzone
-import cv2
-import numpy as np
-from cvzone.HandTrackingModule import HandDetector
-import math
+import pygame
 import random
-cap = cv2.VideoCapture(0)
-cap.set(3, 1280)
-cap.set(4, 720)
-detector = HandDetector(detectionCon=.8, maxHands=1)
+from enum import Enum
+from collections import namedtuple
+pygame.init()
+font=pygame.font.Font("arial.ttf",25)
+class Direction(Enum):
+    RIGHT=1
+    LEFT=2
+    UP=3
+    DOWN=4
+size=20
+SPEED=10
+WHITE = (255, 255, 255)
+RED = (200,0,0)
+BLUE1 = (0, 0, 255)
+BLUE2 = (0, 100, 255)
+BLACK = (0,0,0)
+Point = namedtuple('Point', 'x, y')
 
-
-class SnakeGameClass:
-    def __init__(self, pathFood):
-        self.points= [] # all points of the snake
-        self.lengths= [] # distance between each point
-        self.currentLength= 0 # total length of the snake
-        self.allowedLength= 150 # total allowed length
-        self.previousHead= 0, 0 # previous head point
-       
-        self.imgFood= cv2.imread(pathFood, cv2.IMREAD_UNCHANGED)
-        self.hFood, self.wFood, _ = self.imgFood.shape
-        self.foodPoint= 0,0
-        self.randomFoodLocation()
-       
+class Snake:
+    def __init__(self,w=640,h=480):
+        self.h=h
+        self.w=w
+        self.game_over=False
+        self.display=pygame.display.set_mode((self.w,self.h))
+        pygame.display.set_caption("Snake")
+        self.clock=pygame.time.Clock() 
+        self.direction=Direction.RIGHT
+        self.head=Point(self.w/2,self.h/2) 
+        self.snake=[self.head,Point(self.head.x-size,self.head.y),Point(self.head.x-(2*size),self.head.y)]
         self.score=0
-        self.gameOver= False
-    def randomFoodLocation(self):
-        '''
-        method randomFoodLocation that change the location of donut randomly
-        '''
+        self.food=None
+        self.creat_food()
+    def creat_food(self):
+        x = random.randint(0, (self.w-size )//size )*size 
+        y = random.randint(0, (self.h-size )//size )*size
+        self.food=Point(x,y)
+        if self.food in self.snake:
+            self.creat_food()
+    def play_step(self):
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                pygame.quit()
+            if event.type==pygame.KEYDOWN:
+                if event.key==pygame.K_LEFT:
+                    self.direction=Direction.LEFT
+                elif event.key==pygame.K_RIGHT:
+                    self.direction=Direction.RIGHT
+                elif event.key==pygame.K_UP:
+                    self.direction=Direction.UP
+                elif event.key==pygame.K_DOWN:
+                    self.direction=Direction.DOWN
+
+        self._move(self.direction)
+        self.snake.insert(0,self.head)
+        if self._is_collision():
+            self.game_over=True
+            return self.game_over,self.score
+        if self.head==self.food:
+            self.score+=1
+            self.creat_food()
+        else:
+            self.snake.pop()
+
+        self.draw()
+        self.clock.tick(SPEED)
+        return self.game_over,self.score
+    def draw(self):
+        pass
+    def _move(self,direction):
+       pass
+    def _is_collision(self):
         pass
 
-
-    def update(self, imgMain, currentHead):
-        '''
-        method update that have all method inside it 
-        '''
-        pass
-
-
-    def Length_reduction(self):
-        '''
-        method Length_reduction that check the length must be less than the allowed length
-        '''
-        pass
-
-
-    def check_if_eaten(self):
-        '''
-        method check_if_eaten that check if snake is eat the food
-        '''
-        pass
-
-
-    def draw_snake(self):
-        '''
-        method draw_snake that draw snake
-        '''
-        pass
-
-
-    def draw_food(self):
-        '''
-        method draw_food that draw the donut
-        '''
-        pass
-
-
-    def Collision(self):
-        '''
-        method Collision that check if the snake hit itself
-
-        '''
-        pass
-
-game= SnakeGameClass("./assets/Donut.png")
-
+game=Snake()
 
 while True:
-    success, img =cap.read()
-    img=cv2.flip(img,1)
-    hands,img=detector.findHands(img,flipType=False)
-    if hands:
-        lmList =hands[0]["lmList"]
-        point=lmList[8][0:2]
-        cv2.circle(img,point,20,(200,0,200),cv2.FILLED)
-    cv2.imshow("Image",img)
-    cv2.waitKey(1)
+    game.play_step()
+    if game.game_over:
+        break
+
+print(game.score )
+pygame.quit()
