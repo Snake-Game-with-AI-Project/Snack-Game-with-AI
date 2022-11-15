@@ -3,7 +3,7 @@ import random
 from enum import Enum
 from collections import namedtuple
 pygame.init()
-font=pygame.font.Font("arial.ttf",25)
+font=pygame.font.SysFont    ("arial",25)
 class Direction(Enum):
     RIGHT=1
     LEFT=2
@@ -67,17 +67,39 @@ class Snake:
         self.clock.tick(SPEED)
         return self.game_over,self.score
     def draw(self):
-        pass
+        self.display.fill(BLACK)
+        for point in self.snake:
+            pygame.draw.rect(self.display,BLUE1,pygame.Rect(point.x,point.y,size,size))
+            pygame.draw.rect(self.display,BLUE2,pygame.Rect(point.x+4,point.y+4,12,12))
+        pygame.draw.rect(self.display,RED,pygame.Rect(self.food.x,self.food.y,size,size))
+        text=font.render(f"Score: {self.score}",True,WHITE)
+        self.display.blit(text,[0,0])
+        pygame.display.flip()
     def _move(self,direction):
-        pass
+        x=self.head.x
+        y=self.head.y
+        if direction==Direction.RIGHT:
+            x+=size
+        elif direction==Direction.LEFT:
+            x-=size
+        elif direction==Direction.UP:
+            y-=size
+        elif direction==Direction.DOWN:
+            y+=size
+        self.head=Point(x,y)
     def _is_collision(self):
-        pass
+        if self.head.x > self.w - size or self.head.x < 0 or self.head.y > self.h - size or self.head.y < 0:
+            return True
+        if self.head in self.snake[1:]:
+            return True
+        return False
+
 
 game=Snake()
 
 while True:
     game.play_step()
-    if game.game_over:##
+    if game.game_over:
         break
 
 print(game.score )
