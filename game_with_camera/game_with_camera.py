@@ -4,6 +4,7 @@ import numpy as np
 from cvzone.HandTrackingModule import HandDetector
 import math
 import random
+
 cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
 cap.set(4, 720)
@@ -11,70 +12,55 @@ detector = HandDetector(detectionCon=.8, maxHands=1)
 
 
 class SnakeGameClass:
-    def __init__(self, pathFood):
+    def __init__(self):
         self.points= [] # all points of the snake
         self.lengths= [] # distance between each point
         self.currentLength= 0 # total length of the snake
-        self.allowedLength= 150 # total allowed length
+        self.allowedLength= 250 # total allowed length
         self.previousHead= 0, 0 # previous head point
-       
-        self.imgFood= cv2.imread(pathFood, cv2.IMREAD_UNCHANGED)
-        self.hFood, self.wFood, _ = self.imgFood.shape
-        self.foodPoint= 0,0
-        self.randomFoodLocation()
-       
-        self.score=0
-        self.gameOver= False
-    def randomFoodLocation(self):
-        '''
-        method randomFoodLocation that change the location of donut randomly
-        '''
-        pass
 
-
-    def update(self, imgMain, currentHead):
+    def update(self,imgMain,currentHead):
         '''
         method update that have all method inside it 
         '''
-        pass
+        px, py= self.previousHead
+        cx, cy= currentHead
 
+        self.points.append([cx,cy])
+        distance= math.hypot(cx-px,cy-py)
+        self.lengths.append(distance)
+        self.currentLength +=distance
+        self.previousHead= cx, cy
+        
 
-    def length_reduction(self):
-        '''
-        method Length_reduction that check the length must be less than the allowed length
-        '''
-        pass
+        # Length reduction
+        def reduction():
+            '''
+            method Length_reduction that check the length must be less than the allowed length
+            '''
+            if self.currentLength >self.allowedLength:
+                for i,length in enumerate(self.lengths):
+                    self.currentLength -=length
+                    self.lengths.pop(i)
+                    self.points.pop(i)
+                    if self.currentLength < self.allowedLength:
+                        break
 
+        # Draw snake
+        def draw_snake():
+            '''
+            method draw_snake that draw snake
+            '''
+            if self.points:
+                for i,point in enumerate(self.points):
+                    if i != 0:
+                        cv2.line(imgMain, self.points[i-1],self.points[i],(0,0,255),20)
+                cv2.circle(img,self.points[-1],20,(200,0,200),cv2.FILLED)
+        reduction()
+        draw_snake()
+        return imgMain
 
-    def check_if_eaten(self):
-        '''
-        method check_if_eaten that check if snake is eat the food
-        '''
-        pass
-
-
-    def draw_snake(self):
-        '''
-        method draw_snake that draw snake
-        '''
-        pass
-
-
-    def draw_food(self):
-        '''
-        method draw_food that draw the donut
-        '''
-        pass
-
-
-    def collision(self):
-        '''
-        method Collision that check if the snake hit itself
-
-        '''
-        pass
-
-game= SnakeGameClass("../assets/Donut.png")
+game= SnakeGameClass()
 
 
 while True:
@@ -83,7 +69,7 @@ while True:
     hands,img=detector.findHands(img,flipType=False)
     if hands:
         lmList =hands[0]["lmList"]
-        point=lmList[8][0:2]
-        cv2.circle(img,point,20,(200,0,200),cv2.FILLED)
+        pointIndex=lmList[8][0:2]
+        game.update(img,pointIndex)
     cv2.imshow("Image",img)
     cv2.waitKey(1)
