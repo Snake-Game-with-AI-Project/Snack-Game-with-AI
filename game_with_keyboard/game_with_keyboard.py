@@ -23,6 +23,7 @@ class Snake:
         self.h=h
         self.w=w
         self.game_over=False
+
         self.display=pygame.display.set_mode((self.w,self.h))
         pygame.display.set_caption("Snake")
         self.clock=pygame.time.Clock() 
@@ -32,6 +33,7 @@ class Snake:
         self.score=0
         self.food=None
         self.creat_food()
+        
     def creat_food(self):
         x = random.randint(0, (self.w-size )//size )*size 
         y = random.randint(0, (self.h-size )//size )*size
