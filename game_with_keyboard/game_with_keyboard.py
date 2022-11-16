@@ -3,7 +3,7 @@ import random
 from enum import Enum
 from collections import namedtuple
 pygame.init()
-font=pygame.font.SysFont    ("arial",25)
+font=pygame.font.SysFont("arial",25)
 class Direction(Enum):
     RIGHT=1
     LEFT=2
@@ -23,7 +23,6 @@ class Snake:
         self.h=h
         self.w=w
         self.game_over=False
-
         self.display=pygame.display.set_mode((self.w,self.h))
         pygame.display.set_caption("Snake")
         self.clock=pygame.time.Clock() 
@@ -33,7 +32,6 @@ class Snake:
         self.score=0
         self.food=None
         self.creat_food()
-        
     def creat_food(self):
         x = random.randint(0, (self.w-size )//size )*size 
         y = random.randint(0, (self.h-size )//size )*size
@@ -69,14 +67,31 @@ class Snake:
         self.clock.tick(SPEED)
         return self.game_over,self.score
     def draw(self):
-        self.display.fill(BLACK)
-        for point in self.snake:
-            pygame.draw.rect(self.display,BLUE1,pygame.Rect(point.x,point.y,size,size))
-            pygame.draw.rect(self.display,BLUE2,pygame.Rect(point.x+4,point.y+4,12,12))
-        pygame.draw.rect(self.display,RED,pygame.Rect(self.food.x,self.food.y,size,size))
-        text=font.render(f"Score: {self.score}",True,WHITE)
-        self.display.blit(text,[0,0])
-        pygame.display.flip()
+        if not self.game_over:
+            self.display.fill(BLACK)
+            for point in self.snake:
+                pygame.draw.rect(self.display,BLUE1,pygame.Rect(point.x,point.y,size,size))
+                pygame.draw.rect(self.display,BLUE2,pygame.Rect(point.x+4,point.y+4,12,12))
+            pygame.draw.rect(self.display,RED,pygame.Rect(self.food.x,self.food.y,size,size))
+            text=font.render(f"Score: {self.score}",True,WHITE)
+            self.display.blit(text,[0,0])
+            pygame.display.flip()
+    def gameover(self):
+            for event in pygame.event.get():
+                if event.type==pygame.QUIT:
+                    pygame.quit()
+            self.display.fill(BLACK)
+            text=font.render(f"Score: {self.score}",True,WHITE)
+            self.display.blit(text,[self.w/2-60,self.h/2-50])
+            text=font.render(f"Game Over",True,WHITE)
+            self.display.blit(text,[self.w/2-60,self.h/2-80])
+            pygame.display.flip()
+            pygame.time.delay(2000)
+            self.score=0
+            self.game_over=False
+
+
+
     def _move(self,direction):
         x=self.head.x
         y=self.head.y
@@ -90,19 +105,40 @@ class Snake:
             y+=size
         self.head=Point(x,y)
     def _is_collision(self):
+
         if self.head.x > self.w - size or self.head.x < 0 or self.head.y > self.h - size or self.head.y < 0:
+            self.game_over=False
+            self.display=pygame.display.set_mode((self.w,self.h))
+            pygame.display.set_caption("Snake")
+            self.clock=pygame.time.Clock() 
+            self.direction=Direction.RIGHT
+            self.head=Point(self.w/2,self.h/2) 
+            self.snake=[self.head,Point(self.head.x-size,self.head.y),Point(self.head.x-(2*size),self.head.y)]
+            self.food=None
+            self.creat_food()
             return True
         if self.head in self.snake[1:]:
+            self.game_over=False
+            self.display=pygame.display.set_mode((self.w,self.h))
+            pygame.display.set_caption("Snake")
+            self.clock=pygame.time.Clock() 
+            self.direction=Direction.RIGHT
+            self.head=Point(self.w/2,self.h/2) 
+            self.snake=[self.head,Point(self.head.x-size,self.head.y),Point(self.head.x-(2*size),self.head.y)]
+            self.food=None
+            self.creat_food()
             return True
         return False
-
-
 game=Snake()
 
 while True:
-    game.play_step()
-    if game.game_over:
-        break
+    if not game.game_over:
+        game.play_step()
+    else:
+        game.gameover()
+
+
 
 print(game.score )
+
 pygame.quit()
