@@ -21,6 +21,7 @@ class Snake:
     def __init__(self,w=640,h=480):
         self.h=h
         self.w=w
+        self.game_over=False
         
     def creat_food(self):
         pass

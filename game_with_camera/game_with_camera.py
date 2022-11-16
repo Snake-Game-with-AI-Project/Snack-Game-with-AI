@@ -74,7 +74,7 @@ class SnakeGameClass:
         '''
         pass
 
-game= SnakeGameClass("../assets/Donut.png")
+# game= SnakeGameClass("../assets/Donut.png")
 
 
 while True:

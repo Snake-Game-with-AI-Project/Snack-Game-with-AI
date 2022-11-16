@@ -1,11 +1,17 @@
 import pygame
+from pygame import mixer # class that help us handle all kind of music inside our game
+from Button_class import *
+from button_images import *
 
 # Main class
 class MainCLass:
     def __init__(self):
         pygame.init() # Initialize the pygame
         self.screen=pygame.display.set_mode((800,600)) # create the screen
-
+        # music
+        self.music=pygame.mixer.music.load('./assets/music.mp3')
+        pygame.mixer.music.play(-1)
+    
     # Caption and icon
     def caption_and_icon(self):
         pygame.display.set_caption("Snake Game")
@@ -31,62 +37,37 @@ class MainCLass:
         snake_x= 370
         snake_y= 50
         self.screen.blit(snake_img,(snake_x,snake_y))
+        
+    def check_btn(self):
+        if option1_btn.draw():
+            print('Option 1')
+        if option2_btn.draw():
+            print('Option 2')
+        if mute_btn.draw():
+            pygame.mixer.music.stop()
+        if low_volume_btn.draw():
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(0.2)
+        if high_volume_btn.draw():
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(1)
     
-# Button class
-class Button(MainCLass):
-    def __init__(self,x,y,image,scale):
-        self.screen=pygame.display.set_mode((800,600))
-        width= image.get_width()
-        height= image.get_height()
-        self.image= pygame.transform.scale(image,(int(width*scale),int(height*scale)))
-        self.rect= self.image.get_rect() # to get a rectangle from it
-        self.rect.topleft=(x,y)
-        self.clicked= False
-
-    def draw(self):
-        action= False
-        # get mouse position
-        pos= pygame.mouse.get_pos()
-        #check mouseover and clicked conditions
-        if self.rect.collidepoint(pos):
-            # index0:left mouse btn | index1:middle mouse btn | index2: right mouse btn
-            if pygame.mouse.get_pressed()[0] == 1 and self.clicked==False:
-                self.clicked=True
-                action=True
-            if pygame.mouse.get_pressed()[0]==0:
-                self.clicked=False
-        # draw btn on screen
-        self.screen.blit(self.image, (self.rect.x,self.rect.y))
-        return action
     
 main=MainCLass()
-
-#load btn imgs
-option1_img= pygame.image.load('./assets/option1.png').convert_alpha()
-option2_img= pygame.image.load('./assets/option2.png').convert_alpha()
-exit_img= pygame.image.load('./assets/exit.png').convert_alpha()
-
-# create buttons
-option1_btn=Button(300,230,option1_img,0.7)
-option2_btn=Button(300,330,option2_img,0.7)
-exit_btn= Button(300,430,exit_img,0.7)
 
 # Game loop
 running= True
 while running:
     # RGB colors
     main.screen.fill((51,255,255))
-    if option1_btn.draw():
-        print('Option 1')
-    if option2_btn.draw():
-        print('Option 2')
+    
     if exit_btn.draw():
         running=False
-    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running=False
-    
+            
+    main.check_btn()
     main.insert_image()
     main.text()
     pygame.display.update() # update the game window at each iteration of the code
