@@ -24,6 +24,9 @@ class SnakeGameClass:
         self.foodPoint= 0,0
         self.randomFoodLocation()
 
+        self.score=0
+        self.gameOver= False
+
 
     def randomFoodLocation(self):
         self.foodPoint= random.randint(100,1000),random.randint(100,600)
@@ -70,8 +73,6 @@ class SnakeGameClass:
         self.lengths.append(distance)
         self.currentLength +=distance
         self.previousHead= cx, cy
-        self.score=0
-        self.gameOver= False
         self.reduction()
         self.check_eaten(currentHead)
         self.draw_snake(imgMain)
