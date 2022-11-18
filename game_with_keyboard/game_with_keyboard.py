@@ -10,12 +10,13 @@ class Direction(Enum):
     UP=3
     DOWN=4
 size=20
-SPEED=30
+SPEED=10
 WHITE = (255, 255, 255)
 RED = (200,0,0)
 BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
+GRAY  =(105,105,105)
 Point = namedtuple('Point', 'x, y')
 
 class Snake:
@@ -36,8 +37,9 @@ class Snake:
         x = random.randint(0, (self.w-size )//size )*size 
         y = random.randint(0, (self.h-size )//size )*size
         self.food=Point(x,y)
-        if self.food in self.snake:
+        if self.food in self.snake or (self.food.x ==0 or self.food.x ==620 or self.food.y ==0 or self.food.y==460 ) :
             self.creat_food()
+        
     def play_step(self):
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
@@ -73,6 +75,12 @@ class Snake:
                 pygame.draw.rect(self.display,BLUE1,pygame.Rect(point.x,point.y,size,size))
                 pygame.draw.rect(self.display,BLUE2,pygame.Rect(point.x+4,point.y+4,12,12))
             pygame.draw.rect(self.display,RED,pygame.Rect(self.food.x,self.food.y,size,size))
+            for i in range(640):
+                for j in range(480):
+                    if i==0 or j==0:
+                        pygame.draw.rect(self.display,GRAY,pygame.Rect(i,j,size,size))
+                    if i==620 or j ==460:
+                        pygame.draw.rect(self.display,GRAY,pygame.Rect(i,j,size,size))
             text=font.render(f"Score: {self.score}",True,WHITE)
             self.display.blit(text,[0,0])
             pygame.display.flip()
