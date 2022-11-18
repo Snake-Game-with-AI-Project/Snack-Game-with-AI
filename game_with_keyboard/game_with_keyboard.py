@@ -2,6 +2,9 @@ import pygame
 import random
 from enum import Enum
 from collections import namedtuple
+from pygame import mixer
+mixer.init()
+mixer.music.load('sound/Coin.mp3') #
 pygame.init()
 font=pygame.font.SysFont    ("arial",25)
 class Direction(Enum):
@@ -60,6 +63,7 @@ class Snake:
             self.game_over=True
             return self.game_over,self.score
         if self.head==self.food:
+            mixer.music.play()
             self.score+=1
             self.creat_food()
         else:
