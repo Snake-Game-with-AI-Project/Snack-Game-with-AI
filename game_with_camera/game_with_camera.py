@@ -32,6 +32,7 @@ class SnakeGameClass:
             minDis= cv2.pointPolygonTest(pts,(cx,cy),True)
            
             if -1 <= minDis <=1:
+                print("Hit")
                 self.gameOver=True
                 self.points= [] # all points of the snake
                 self.lengths= [] # distance between each point
@@ -40,12 +41,6 @@ class SnakeGameClass:
                 self.previousHead= 0, 0 # previous head point
                 self.randomFoodLocation()
        
-
-
-        self.score=0
-        self.gameOver= False
-
-
 
     def randomFoodLocation(self):
         self.foodPoint= random.randint(100,1000),random.randint(100,600)
@@ -68,7 +63,7 @@ class SnakeGameClass:
             self.randomFoodLocation()
             self.allowedLength +=50
             self.score +=1
-    
+            print(self.score)
     def draw_snake(self,imgMain):
             '''
             method draw_snake that draw snake
@@ -90,6 +85,7 @@ class SnakeGameClass:
             '''
             px, py= self.previousHead
             cx, cy= currentHead
+
             self.points.append([cx,cy])
             distance= math.hypot(cx-px,cy-py)
             self.lengths.append(distance)
@@ -99,21 +95,9 @@ class SnakeGameClass:
             self.check_eaten(currentHead)
             self.draw_snake(imgMain)
             rx, ry = self.foodPoint
+            print(rx - self.wFood//2)
             imgMain= cvzone.overlayPNG(imgMain, self.imgFood,(rx - self.wFood//2 , ry - self.hFood//2))
             self.Collision(imgMain,currentHead)
-
-        self.points.append([cx,cy])
-        distance= math.hypot(cx-px,cy-py)
-        self.lengths.append(distance)
-        self.currentLength +=distance
-        self.previousHead= cx, cy
-        self.reduction()
-        self.check_eaten(currentHead)
-        self.draw_snake(imgMain)
-        rx, ry = self.foodPoint
-        print(rx - self.wFood//2)
-        imgMain= cvzone.overlayPNG(imgMain, self.imgFood,(rx - self.wFood//2 , ry - self.hFood//2))
-
         return imgMain
 
 game= SnakeGameClass("assets\Donut.png")
