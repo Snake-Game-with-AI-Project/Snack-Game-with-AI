@@ -41,6 +41,12 @@ class SnakeGameClass:
                 self.randomFoodLocation()
        
 
+
+        self.score=0
+        self.gameOver= False
+
+
+
     def randomFoodLocation(self):
         self.foodPoint= random.randint(100,1000),random.randint(100,600)
 
@@ -84,7 +90,6 @@ class SnakeGameClass:
             '''
             px, py= self.previousHead
             cx, cy= currentHead
-
             self.points.append([cx,cy])
             distance= math.hypot(cx-px,cy-py)
             self.lengths.append(distance)
@@ -96,6 +101,19 @@ class SnakeGameClass:
             rx, ry = self.foodPoint
             imgMain= cvzone.overlayPNG(imgMain, self.imgFood,(rx - self.wFood//2 , ry - self.hFood//2))
             self.Collision(imgMain,currentHead)
+
+        self.points.append([cx,cy])
+        distance= math.hypot(cx-px,cy-py)
+        self.lengths.append(distance)
+        self.currentLength +=distance
+        self.previousHead= cx, cy
+        self.reduction()
+        self.check_eaten(currentHead)
+        self.draw_snake(imgMain)
+        rx, ry = self.foodPoint
+        print(rx - self.wFood//2)
+        imgMain= cvzone.overlayPNG(imgMain, self.imgFood,(rx - self.wFood//2 , ry - self.hFood//2))
+
         return imgMain
 
 game= SnakeGameClass("assets\Donut.png")
