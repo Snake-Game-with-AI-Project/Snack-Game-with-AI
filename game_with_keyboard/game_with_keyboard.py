@@ -10,7 +10,7 @@ class Direction(Enum):
     UP=3
     DOWN=4
 size=20
-SPEED=10
+SPEED=30
 WHITE = (255, 255, 255)
 RED = (200,0,0)
 BLUE1 = (0, 0, 255)
