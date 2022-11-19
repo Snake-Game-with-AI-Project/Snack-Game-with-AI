@@ -1,6 +1,6 @@
 #import modules
 from tkinter import *
-import os
+import os,sys
  
 # Designing window for registration
  
@@ -66,7 +66,7 @@ def register_user():
  
     username_info = username.get()
     password_info = password.get()
-    location="login_and_register"
+    location="Main/users"
     complete_name=os.path.join(location,username_info)
  
     file = open(complete_name, "w")
@@ -87,9 +87,9 @@ def login_verify():
     username_login_entry.delete(0, END)
     password_login_entry.delete(0, END)
  
-    list_of_files = os.listdir("./login_and_register")
+    list_of_files = os.listdir("./Main/users")
     if username1 in list_of_files:
-        location="login_and_register"
+        location="Main/users"
         complete_name=os.path.join(location,username1)
         file1 = open(complete_name, "r")
         verify = file1.read().splitlines()
@@ -135,7 +135,11 @@ def user_not_found():
 # Deleting popups
  
 def delete_login_success():
-    login_success_screen.destroy()
+    login_success_screen.withdraw()
+    main_screen.withdraw()
+    login_screen.withdraw()
+    import main
+    
  
  
 def delete_password_not_recognised():

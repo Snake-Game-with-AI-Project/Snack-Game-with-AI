@@ -4,7 +4,7 @@ from enum import Enum
 from collections import namedtuple
 from pygame import mixer
 mixer.init()
-mixer.music.load('sound/Coin.mp3') #
+mixer.music.load('assets/Coin.mp3') #
 pygame.init()
 font=pygame.font.SysFont("arial",25)
 class Direction(Enum):
@@ -148,9 +148,3 @@ while True:
         game.play_step()
     else:
         game.gameover()
-
-
-
-print(game.score )
-
-pygame.quit()
