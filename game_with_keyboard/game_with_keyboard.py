@@ -3,6 +3,7 @@ import random
 from enum import Enum
 from collections import namedtuple
 from pygame import mixer
+import shelve
 mixer.init()
 mixer.music.load('sound/Coin.mp3') #
 pygame.init()
@@ -63,7 +64,7 @@ class Snake:
             self.game_over=True
             return self.game_over,self.score
         if self.head==self.food:
-            mixer.music.play()
+            mixer.music.play() 
             self.score+=1
             self.creat_food()
         else:
@@ -92,11 +93,24 @@ class Snake:
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     pygame.quit()
+            
+            with open("score.text",'r') as f:
+                score=f.read()
+            
+            if self.score>int(score):
+                bestScore=self.score
+                with open('score.text','w') as f :
+                    f.write(str(self.score))
+            
+               
+
             self.display.fill(BLACK)
             text=font.render(f"Score: {self.score}",True,WHITE)
             self.display.blit(text,[self.w/2-60,self.h/2-50])
             text=font.render(f"Game Over",True,WHITE)
             self.display.blit(text,[self.w/2-60,self.h/2-80])
+            text=font.render(f"Best Score: {bestScore}",True,RED)
+            self.display.blit(text,[self.w/2-60,self.h/2-110]) 
             pygame.display.flip()
             pygame.time.delay(2000)
             self.score=0
