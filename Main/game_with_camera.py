@@ -2,7 +2,7 @@ import cvzone
 import cv2
 import numpy as np
 from cvzone.HandTrackingModule import HandDetector
-import math
+import math,os
 import random
 
 cap = cv2.VideoCapture(0)
@@ -19,6 +19,8 @@ class SnakeGameClass:
         self.allowedLength= 250 # total allowed length
         self.previousHead= 0, 0 # previous head point
         self.score=0
+        self.best_score=0
+        self.msg=''
         self.gameOver= False    
         self.imgFood= cv2.imread(pathFood, cv2.IMREAD_UNCHANGED)
         self.hFood, self.wFood, _ = self.imgFood.shape
@@ -34,6 +36,25 @@ class SnakeGameClass:
             if -1 <= minDis <=1:
                 print("Hit")
                 self.gameOver=True
+                try:
+                    with open("Score/AI_score",'r') as file:
+                        new_score= file.read()
+                    if self.score>int(new_score):
+                        self.best_score=self.score
+                        self.msg='Good job'
+                        with open('Score/AI_score', 'w') as file:
+                            file.write(self.score)
+                    else:
+                        self.msg='Try again'
+                        
+                except:
+                    self.best_score=self.score
+                    self.msg='Good job'
+                    path=os.path.join('Score','AI_score')
+                    with open(path, 'w') as file:
+                            file.write(str(self.best_score))
+                
+                
                 self.points= [] # all points of the snake
                 self.lengths= [] # distance between each point
                 self.currentLength= 0 # total length of the snake
@@ -76,13 +97,15 @@ class SnakeGameClass:
 
             cvzone.putTextRect(imgMain, f'Score: {self.score}', [50,80],scale=3,thickness=3,offset=10)
     def update(self,imgMain,currentHead):
+        '''
+        method update that have all method inside it 
+        '''
         if self.gameOver:
-            cvzone.putTextRect(imgMain, "Game Over",[300,400],scale=7,thickness=5,offset=20)
-            cvzone.putTextRect(imgMain, f'Your Score: {self.score}', [300,550],scale=7,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, "Game Over",[300,200],scale=7,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, f'Your Score: {self.score}', [300,350],scale=7,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, f'Best Score: {self.best_score}', [300,500],scale=7,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, self.msg, [300,650],scale=7,thickness=5,offset=20)
         else:
-            '''
-            method update that have all method inside it 
-            '''
             px, py= self.previousHead
             cx, cy= currentHead
 
