@@ -95,6 +95,9 @@ def login_verify():
         verify = file1.read().splitlines()
         if password1 in verify:
             login_sucess()
+            with open('user_name','w') as file:
+                file.write(username1)
+                
  
         else:
             password_not_recognised()
@@ -164,6 +167,7 @@ def main_account_screen():
     Button(text="Register", height="2", width="30", command=register).pack()
  
     main_screen.mainloop()
- 
- 
-main_account_screen()
+
+if __name__=='__main__':    
+    main_account_screen()
+

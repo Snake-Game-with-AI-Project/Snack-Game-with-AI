@@ -4,6 +4,7 @@ from tkVideoPlayer import TkinterVideo
 import pygame
 
 
+
 root= Tk() #create a window
 
 root.title("Snake Game") # Add title
@@ -23,8 +24,7 @@ my_label1.place(anchor=CENTER, relx=0.5,rely=0.1)
 
 
 # Add Image
-img= PhotoImage(file="assets\snake_img.png")
-# my_img= ImageTk.PhotoImage(Image.open("assets/snake_bkg.png"))
+img= PhotoImage(file='assets/snake_img.png')
 w=Label(image=img,bg='#C3F8FF')
 w.place(anchor=CENTER, relx=0.5,rely=0.3)
 

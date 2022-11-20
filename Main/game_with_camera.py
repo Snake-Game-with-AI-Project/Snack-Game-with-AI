@@ -5,6 +5,7 @@ from cvzone.HandTrackingModule import HandDetector
 import math,os
 import random
 
+
 cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
 cap.set(4, 720)
@@ -21,6 +22,9 @@ class SnakeGameClass:
         self.score=0
         self.best_score=0
         self.msg=''
+        self.user_name=''
+        self.best_user=''
+        self.user_best_score=0
         self.gameOver= False    
         self.imgFood= cv2.imread(pathFood, cv2.IMREAD_UNCHANGED)
         self.hFood, self.wFood, _ = self.imgFood.shape
@@ -36,10 +40,31 @@ class SnakeGameClass:
             if -1 <= minDis <=1 or cx<=10 or cx>=1270 or cy<=10 or cy>=690:
                 print("Hit")
                 self.gameOver=True
+
                 try:
+                    with open('user_name','r') as file:
+                        self.user_name= file.read()
+                    path1=os.path.join('Main/users',self.user_name)
+                    
+                    with open(path1,'r') as file1:
+                        list_content=file1.read().splitlines()
+                        try:
+                            prev_score= list_content[2]
+                        except:
+                            prev_score=0
+                            
+                    with open(path1,'w') as file:
+                        for s in list_content[:2]:
+                            file.write(s + "\n")
+                        if self.score> int(prev_score):
+                            self.user_best_score=self.score
+                        else:
+                            self.user_best_score=int(prev_score)
+                        file.write(str(self.user_best_score))
+                            
                     with open("Score/AI_score",'r') as file:
                         recorded_score= file.read()
-                        print(recorded_score)
+                        # print(recorded_score)
                     if self.score>int(recorded_score):
                         self.best_score=self.score
                         self.msg='Good job'
@@ -55,6 +80,23 @@ class SnakeGameClass:
                     path=os.path.join('Score','AI_score')
                     with open(path, 'w') as file:
                         file.write(str(self.best_score))
+                list_of_files = os.listdir("./Main/users")
+                
+                dic={}
+                for i,us in enumerate(list_of_files):
+                    path2=os.path.join('Main/users',list_of_files[i])
+                    with open(path2,'r') as f:
+                        x= f.read().splitlines()[2]
+                        dic[us]=int(x)
+                # print(dic)
+                        
+                maxx=0
+                for key,score in dic.items():
+                    if score> maxx:
+                        maxx= score
+                        self.best_user=key
+                # print(maxx)
+                # print(self.best_user)
                 
                 
                 self.points= [] # all points of the snake
@@ -102,10 +144,12 @@ class SnakeGameClass:
         method update that have all method inside it 
         '''
         if self.gameOver:
-            cvzone.putTextRect(imgMain, "Game Over",[300,200],scale=7,thickness=5,offset=20)
-            cvzone.putTextRect(imgMain, f'Your Score: {self.score}', [300,350],scale=7,thickness=5,offset=20)
-            cvzone.putTextRect(imgMain, f'Best Score: {self.best_score}', [300,500],scale=7,thickness=5,offset=20)
-            cvzone.putTextRect(imgMain, self.msg, [300,650],scale=7,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, f"User Name => {self.user_name}",[80,150],scale=4,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, f'Current Score: {self.score}', [80,250],scale=4,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, f'Best Score: {self.user_best_score}', [80,350],scale=4,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, f'{self.best_score} is BEST Score of Game by {self.best_user}', [80,450],scale=4,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, self.msg, [80,550],scale=5,thickness=5,offset=20)
+            cvzone.putTextRect(imgMain, "Game Over",[80,650],scale=4,thickness=5,offset=20)
         else:
             cv2.line(imgMain, [0,0],[1280,0],(0,0,255),20)
             cv2.line(imgMain, [0,700],[1280,700],(0,0,255),20)
@@ -128,7 +172,7 @@ class SnakeGameClass:
             self.Collision(imgMain,currentHead)
         return imgMain
 
-game= SnakeGameClass("mouse.png")
+game= SnakeGameClass("assets\mouse.png")
 while True:
     success, img= cap.read()
     img= cv2.flip(img,1)
