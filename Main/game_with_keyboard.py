@@ -22,11 +22,11 @@ BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
 GRAY  =(105,105,105)
 Point = namedtuple('Point', 'x, y')
-
 class Snake:
     def __init__(self,w=640,h=480):
         self.h=h
         self.w=w
+        self.bestScore=0
         self.game_over=False
         self.display=pygame.display.set_mode((self.w,self.h))
         pygame.display.set_caption("Snake")
@@ -94,14 +94,16 @@ class Snake:
                 if event.type==pygame.QUIT:
                     pygame.quit()
             
-            with open("score.text",'r') as f:
+            with open("Score\score_for_keyboard.text",'r') as f:
                 score=f.read()
             
             if self.score>int(score):
-                bestScore=self.score
-                with open('score.text','w') as f :
+                self.bestScore=self.score
+                with open('Score\score_for_keyboard.text    ','w') as f :
                     f.write(str(self.score))
-            
+            else:
+                self.bestScore=score
+
                
 
             self.display.fill(BLACK)
@@ -109,7 +111,7 @@ class Snake:
             self.display.blit(text,[self.w/2-60,self.h/2-50])
             text=font.render(f"Game Over",True,WHITE)
             self.display.blit(text,[self.w/2-60,self.h/2-80])
-            text=font.render(f"Best Score: {bestScore}",True,RED)
+            text=font.render(f"Best Score: {self.bestScore}",True,RED)
             self.display.blit(text,[self.w/2-60,self.h/2-110]) 
             pygame.display.flip()
             pygame.time.delay(2000)
@@ -162,3 +164,5 @@ while True:
         game.play_step()
     else:
         game.gameover()
+
+pygame.quit()
