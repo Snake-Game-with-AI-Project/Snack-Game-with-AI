@@ -23,7 +23,7 @@ my_label1.place(anchor=CENTER, relx=0.5,rely=0.1)
 
 
 # Add Image
-img= PhotoImage(file="assets\sss.png")
+img= PhotoImage(file="assets\snake_img.png")
 # my_img= ImageTk.PhotoImage(Image.open("assets/snake_bkg.png"))
 w=Label(image=img,bg='#C3F8FF')
 w.place(anchor=CENTER, relx=0.5,rely=0.3)

@@ -33,18 +33,20 @@ class SnakeGameClass:
             cv2.polylines(imgMain,[pts],False,(0,200,0),3)
             minDis= cv2.pointPolygonTest(pts,(cx,cy),True)
            
-            if -1 <= minDis <=1:
+            if -1 <= minDis <=1 or cx<=10 or cx>=1270 or cy<=10 or cy>=690:
                 print("Hit")
                 self.gameOver=True
                 try:
                     with open("Score/AI_score",'r') as file:
-                        new_score= file.read()
-                    if self.score>int(new_score):
+                        recorded_score= file.read()
+                        print(recorded_score)
+                    if self.score>int(recorded_score):
                         self.best_score=self.score
                         self.msg='Good job'
                         with open('Score/AI_score', 'w') as file:
                             file.write(self.score)
                     else:
+                        self.best_score=recorded_score
                         self.msg='Try again'
                         
                 except:
@@ -52,7 +54,7 @@ class SnakeGameClass:
                     self.msg='Good job'
                     path=os.path.join('Score','AI_score')
                     with open(path, 'w') as file:
-                            file.write(str(self.best_score))
+                        file.write(str(self.best_score))
                 
                 
                 self.points= [] # all points of the snake
@@ -84,7 +86,6 @@ class SnakeGameClass:
             self.randomFoodLocation()
             self.allowedLength +=50
             self.score +=1
-            print(self.score)
     def draw_snake(self,imgMain):
             '''
             method draw_snake that draw snake
@@ -92,8 +93,8 @@ class SnakeGameClass:
             if self.points:
                 for i,point in enumerate(self.points):
                     if i != 0:
-                        cv2.line(imgMain, self.points[i-1],self.points[i],(0,0,255),20)
-                cv2.circle(img,self.points[-1],20,(200,0,200),cv2.FILLED)
+                        cv2.line(imgMain, self.points[i-1],self.points[i],(255,255,0),20)
+                cv2.circle(img,self.points[-1],20,(255,255,0),cv2.FILLED)
 
             cvzone.putTextRect(imgMain, f'Score: {self.score}', [50,80],scale=3,thickness=3,offset=10)
     def update(self,imgMain,currentHead):
@@ -106,6 +107,10 @@ class SnakeGameClass:
             cvzone.putTextRect(imgMain, f'Best Score: {self.best_score}', [300,500],scale=7,thickness=5,offset=20)
             cvzone.putTextRect(imgMain, self.msg, [300,650],scale=7,thickness=5,offset=20)
         else:
+            cv2.line(imgMain, [0,0],[1280,0],(0,0,255),20)
+            cv2.line(imgMain, [0,700],[1280,700],(0,0,255),20)
+            cv2.line(imgMain, [0,0],[0,700],(0,0,255),20)
+            cv2.line(imgMain, [1280,0],[1280,700],(0,0,255),20)
             px, py= self.previousHead
             cx, cy= currentHead
 
@@ -118,12 +123,12 @@ class SnakeGameClass:
             self.check_eaten(currentHead)
             self.draw_snake(imgMain)
             rx, ry = self.foodPoint
-            print(rx - self.wFood//2)
+            # print(rx - self.wFood//2)
             imgMain= cvzone.overlayPNG(imgMain, self.imgFood,(rx - self.wFood//2 , ry - self.hFood//2))
             self.Collision(imgMain,currentHead)
         return imgMain
 
-game= SnakeGameClass("assets\Donut.png")
+game= SnakeGameClass("mouse.png")
 while True:
     success, img= cap.read()
     img= cv2.flip(img,1)
