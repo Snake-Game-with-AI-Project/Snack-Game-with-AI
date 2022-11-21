@@ -1,4 +1,4 @@
-import pygame
+import pygame,os
 import random
 from enum import Enum
 from collections import namedtuple
@@ -27,6 +27,9 @@ class Snake:
         self.h=h
         self.w=w
         self.bestScore=0
+        self.user_name=''
+        self.user_best_score=0
+        self.best_user=''
         self.game_over=False
         self.display=pygame.display.set_mode((self.w,self.h))
         pygame.display.set_caption("Snake")
@@ -93,6 +96,8 @@ class Snake:
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     pygame.quit()
+                    
+            
             
             with open("Score\score_for_keyboard.text",'r') as f:
                 score=f.read()
@@ -103,8 +108,7 @@ class Snake:
                     f.write(str(self.score))
             else:
                 self.bestScore=score
-
-               
+              
 
             self.display.fill(BLACK)
             text=font.render(f"Score: {self.score}",True,WHITE)
