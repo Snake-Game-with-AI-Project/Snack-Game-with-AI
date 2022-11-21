@@ -5,7 +5,8 @@ from cvzone.HandTrackingModule import HandDetector
 import math,os
 import random
 import pygame
-
+from pygame import mixer
+mixer.init()
 
 cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
@@ -14,7 +15,7 @@ detector = HandDetector(detectionCon=.8, maxHands=1)
 
 
 class SnakeGameClass:
-    pathFood=['assets\mais.png','assets/rania.png','assets\islam.png','assets\mohammad.png']
+    pathFood=['assets\mais.png','assets/rania.png','assets\islam.png','assets\mohammad.png',"assets\Bayan.png"]
     
     def __init__(self):
         self.points= [] # all points of the snake
