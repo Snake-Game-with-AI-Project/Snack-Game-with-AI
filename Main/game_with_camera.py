@@ -14,7 +14,9 @@ detector = HandDetector(detectionCon=.8, maxHands=1)
 
 
 class SnakeGameClass:
-    def __init__(self,pathFood):
+    pathFood=['assets\mais.png','assets/rania.png','assets\islam.png','assets\mohammad.png']
+    
+    def __init__(self):
         self.points= [] # all points of the snake
         self.lengths= [] # distance between each point
         self.currentLength= 0 # total length of the snake
@@ -25,9 +27,10 @@ class SnakeGameClass:
         self.msg=''
         self.user_name=''
         self.best_user=''
+        self.rand=random.randint(0, len(SnakeGameClass.pathFood)-1)
         self.user_best_score=0
         self.gameOver= False    
-        self.imgFood= cv2.imread(pathFood, cv2.IMREAD_UNCHANGED)
+        self.imgFood= cv2.imread(SnakeGameClass.pathFood[self.rand], cv2.IMREAD_UNCHANGED)
         self.hFood, self.wFood, _ = self.imgFood.shape
         self.foodPoint= 0,0
         self.randomFoodLocation()
@@ -114,6 +117,9 @@ class SnakeGameClass:
 
     def randomFoodLocation(self):
         self.foodPoint= random.randint(100,1000),random.randint(100,600)
+        self.rand=random.randint(0,len(SnakeGameClass.pathFood)-1)
+        self.imgFood= cv2.imread(SnakeGameClass.pathFood[self.rand], cv2.IMREAD_UNCHANGED)
+        self.hFood, self.wFood, _ = self.imgFood.shape
 
     def reduction(self):
             '''
@@ -140,20 +146,29 @@ class SnakeGameClass:
             method draw_snake that draw snake
             '''
             with open('user_name','r') as file:
-                    self.user_name= file.read()
+                self.user_name= file.read()
+                
             with open("Score/AI_score",'r') as file:
                 recorded_score= file.read()
                 # print(recorded_score)
-                    
+               
             list_of_files = os.listdir("./Main/users")
             dic={}
             for i,us in enumerate(list_of_files):
                 path2=os.path.join('Main/users',list_of_files[i])
                 with open(path2,'r') as f:
-                    x= f.read().splitlines()[2]
-                    dic[us]=int(x)
-            # print(dic)
+                    l= f.read().splitlines()
                     
+                    if len(l)==3:
+                        x= l[2]
+                        dic[us]=int(x)
+                    else:
+                        dic[us]=0
+                        l.append('0')
+                        with open(path2,'w') as f:
+                            for i in l:
+                                f.write(i+'\n')
+          
             maxx=0
             for key,score in dic.items():
                 if score> maxx:
@@ -201,8 +216,7 @@ class SnakeGameClass:
             imgMain= cvzone.overlayPNG(imgMain, self.imgFood,(rx - self.wFood//2 , ry - self.hFood//2))
             self.Collision(imgMain,currentHead)
         return imgMain
-
-game= SnakeGameClass("assets\mouse.png")
+game= SnakeGameClass()
 while True:
     success, img= cap.read()
     img= cv2.flip(img,1)
