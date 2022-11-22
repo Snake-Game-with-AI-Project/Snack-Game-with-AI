@@ -9,8 +9,8 @@ from pygame import mixer
 mixer.init()
 
 cap = cv2.VideoCapture(0)
-cap.set(3, 1280)
-cap.set(4, 720)
+cap.set(3, 1360)
+cap.set(4, 768)
 detector = HandDetector(detectionCon=.8, maxHands=1)
 
 
