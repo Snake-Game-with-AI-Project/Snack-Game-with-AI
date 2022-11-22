@@ -5,7 +5,8 @@ from cvzone.HandTrackingModule import HandDetector
 import math,os
 import random
 import pygame
-
+from pygame import mixer
+mixer.init()
 
 cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
