@@ -86,9 +86,9 @@ class Snake:
             for i in range(640):
                 for j in range(480):
                     if i==0 or j==0:
-                        pygame.draw.rect(self.display,GRAY,pygame.Rect(i,j,size,size))
+                        pygame.draw.rect(self.display,BLUE1,pygame.Rect(i,j,size,size))
                     if i==620 or j ==460:
-                        pygame.draw.rect(self.display,GRAY,pygame.Rect(i,j,size,size))
+                        pygame.draw.rect(self.display,BLUE1,pygame.Rect(i,j,size,size))
             text=font.render(f"Score: {self.score}",True,WHITE)
             self.display.blit(text,[0,0])
             pygame.display.flip()
