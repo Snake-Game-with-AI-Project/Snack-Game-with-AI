@@ -15,7 +15,7 @@ detector = HandDetector(detectionCon=.8, maxHands=1)
 
 
 class SnakeGameClass:
-    pathFood=['assets\mais.png','assets/rania.png','assets\islam.png','assets\mohammad.png',"assets\Bayan.png"]
+    pathFood=['assets\mais_ready.png','assets/rania.png','assets\islam.png','assets\mohammad.png','assets/bayan.png','assets/alaa.png']
     
     def __init__(self):
         self.points= [] # all points of the snake
