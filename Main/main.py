@@ -73,13 +73,13 @@ def option1():
         root.deiconify()
     def tutorial():
         videoplayer = TkinterVideo(master=top, scaled=True)
-        videoplayer.load(r"assets/video.mp4")
+        videoplayer.load(r"assets/VideoTutorial.mp4")
         videoplayer.place(anchor=CENTER,relx=0.5,rely=0.75,width=600,height=300)
-        videoplayer.after(10000,videoplayer.destroy)
+        videoplayer.after(35000,videoplayer.destroy)
 
         videoplayer.play() # play the video
     def play():
-        import game_with_camera
+        import Main.game_with_camera
     
     watch_tut_img = Image.open('assets/button_watch-tutorial.png')
     resize_8= resize_img(watch_tut_img,200,50)
@@ -160,7 +160,7 @@ def option2():
 
         videoplayer.play() # play the video
     def play():
-        import game_with_keyboard
+        import Main.game_with_keyboard
     
     watch_tut_img = Image.open('assets/button_watch-tutorial.png')
     resize_8= resize_img(watch_tut_img,200,50)

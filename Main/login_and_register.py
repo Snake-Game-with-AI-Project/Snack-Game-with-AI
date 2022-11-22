@@ -160,7 +160,7 @@ def login_verify():
 # Designing popup for login success
 def login_sucess():
     login_screen.withdraw()
-    import main
+    import Main.main
 
 # Designing popup for login invalid password
 def password_not_recognised():
